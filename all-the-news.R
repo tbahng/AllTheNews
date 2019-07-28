@@ -7,5 +7,5 @@ setwd("C:\\Users\\tedjt\\Desktop\\School\\2019 Summer\\FinalProject")
 # setwd("")
 # setwd("")
 
-# Only run this once, cause it tages AAAAAGeS
+# Only run this once, cause it takes AAAAAGeS
 # dat <- read.csv("longform.csv", header = TRUE)
