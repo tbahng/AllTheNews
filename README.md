@@ -1,2 +1,4 @@
 # AllTheNews
-For 707 Final
+For 707 Final  
+
+This is an addition to the markdown file
