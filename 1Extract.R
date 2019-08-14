@@ -25,12 +25,12 @@ check_text <- function(x) {
   grepl(pattern = '[^ -~] | [<.*?>]', x) | grepl(pattern = '[\r\n]', x)
 }
 
-# function to convert non-utf8 text to utf-8 encoding
+# function to convert utf8 text to latin1 encoding
 # function to clean text
 clean_text <- function(x) {
   Encoding(x) <- "UTF-8"
-  # replace any non UTF-8 with ''
-  x <- iconv(x, "UTF-8", "UTF-8",sub='')
+  # replace any UTF-8 with latin1 else ''
+  x <- iconv(x, "UTF-8", "latin1", sub='')
   # remove html tags
   x <- gsub("<.*?>", "", x)
   # remove carriage return / new line characters
