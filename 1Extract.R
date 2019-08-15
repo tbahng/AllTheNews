@@ -214,8 +214,10 @@ system.time({
   dat[, (chgVars) := lapply(.SD, as.factor), .SDcols = chgVars]
 })
 
-sapply(dat[, chgVars, with = FALSE], levels)
+#sapply(dat[, chgVars, with = FALSE], levels)
 
+# convert 'date' to Date format
+dat$date <- as.Date(dat$date)
 
 #################################################################
 # save cleaned data back to RDA
