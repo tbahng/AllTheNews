@@ -25,6 +25,20 @@ check_text <- function(x) {
   grepl(pattern = '[^ -~] | [<.*?>]', x) | grepl(pattern = '[\r\n]', x)
 }
 
+## This is causing trouble with tolower() during tm_map process.
+# function to convert non-utf8 text to utf-8 encoding
+# function to clean text
+# clean_text <- function(x) {
+#   Encoding(x) <- "UTF-8"
+#   # replace any non UTF-8 with ''
+#   x <- iconv(x, "UTF-8", "UTF-8",sub='')
+#   # remove html tags
+#   x <- gsub("<.*?>", "", x)
+#   # remove carriage return / new line characters
+#   x <- gsub("[\r\n]", "", x)
+#   return(x)
+# }
+
 # function to convert utf8 text to latin1 encoding
 # function to clean text
 clean_text <- function(x) {
@@ -192,15 +206,16 @@ dat$author[check_text(dat$author)] %>% head
 dat$author[check_text(dat$author)] %>% tail
 # it appears that the remaining "cleaned" text now only includes "valid" characters
 
-# convert character variables to factor
+# convert nominal variables to factor
 # potential class variables are 'publication', 'category', 'digital', and 'section'
-chgVars <- c('publication','category','digital','section')
+chgVars <- c('year','month','publication','category','digital','section')
 
 system.time({
   dat[, (chgVars) := lapply(.SD, as.factor), .SDcols = chgVars]
 })
 
 sapply(dat[, chgVars, with = FALSE], levels)
+
 
 #################################################################
 # save cleaned data back to RDA
