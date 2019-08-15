@@ -2,7 +2,7 @@
 # primary transformations will be to:
 ## subset the data to relevant observations
 ## convert data to a document term matrix
-## convert data to an item matrix for association rule mining
+## convert data to a transactions dataset for association rule mining
 # Results are saved to 'data/2Transform.rda'
 
 rm(list = ls())
@@ -206,8 +206,8 @@ trans <- as(dfArm, "transactions")
 # save data
 ############################################
 save(
-  df,
-  dtm,
-  trans,
+  df, # transformed original dataset
+  dtm, # document term matrix
+  trans, # transactions dataset
   file = "data/2Transform.rda"
 )
