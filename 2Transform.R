@@ -180,28 +180,31 @@ dtm <- dtm[, which(termTotals > minTermFreq)]
 ############################################
 # Create item matrix (i.e. transactions data set)
 # for association rule mining
+# subset to just one year [2018]
 ############################################
 # drop any unused levels from data.frame
 df <- droplevels(df)
-# subset data for only factor variables
-i <- sapply(df, is.factor)
-dfArm <- df[, i]
+# subset data to just one year 2018
+dfArm <- df[which(df$year == 2018),] %>% droplevels()
+# create a mini-document term matrix to process the fullText
+# read the full corpus of text
+corp <- Corpus(VectorSource(dfArm$fullText))
+dtm2 <- DocumentTermMatrix(corp,
+                          control = list(
+                            stopwords = TRUE, 
+                            removePunctuation = TRUE,
+                            removeNumbers = TRUE,
+                            tolower = TRUE,
+                            stripWhitespace = TRUE
+                          ))
+# for each document get all the terms used
+allTerms <- dtm2$dimnames$Terms
+# get combined terms by document
+m <- as.matrix(dtm2)
+termVec <- apply(m, 1, function(x) paste(allTerms[which(x > 0)], collapse = ' '))
 
-# select some top highly meaningful, topical terms from document term matrix
-# 'trump', 'nation', 'clinton', 'world', 'compani', 'republican', 'campaign', 'elect',
-# 'democrat', 'obama', 'vote', and 'school'
-head(sort(termTotals, decreasing = T), 100)
-keepCols <- c('trump', 'nation', 'clinton', 'world', 'compani', 'republican', 
-              'campaign', 'elect','democrat', 'obama', 'vote', 'school')
-tmp <- as.data.frame.matrix(dtm[, intersect(colnames(dtm), keepCols)])
-tmp <- tmp %>% 
-  mutate_all(., discretize, method = 'frequency')
-
-# bind original factors with discretized term variables
-dfArm <- cbind(dfArm, tmp) %>% droplevels()
 # convert dataframe to transactions dataset
-trans <- as(dfArm, "transactions")
-
+trans <- as(strsplit(termVec, " "), "transactions")
 ############################################
 # save data
 ############################################
