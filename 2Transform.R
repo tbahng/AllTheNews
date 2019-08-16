@@ -137,7 +137,9 @@ system.time(
 )
 
 # transform the corpus
-skipWords <- c(levels(dat$publication), stopwords('en'),
+pubWords <- levels(dat$publication) %>%
+  strsplit(., split = ' ') %>% unlist %>% tolower() %>% unique
+skipWords <- c(pubWords, stopwords('en'),
                stopwords('en')[!stopwords('en') %in% affin$V1])
 # remove punctuation
 words.corpus <- tm_map(words.corpus, removePunctuation)
@@ -189,9 +191,10 @@ dfArm <- df[which(df$year == 2018),] %>% droplevels()
 # create a mini-document term matrix to process the fullText
 # read the full corpus of text
 corp <- Corpus(VectorSource(dfArm$fullText))
+
 dtm2 <- DocumentTermMatrix(corp,
                           control = list(
-                            stopwords = TRUE, 
+                            stopwords = skipWords, 
                             removePunctuation = TRUE,
                             removeNumbers = TRUE,
                             tolower = TRUE,
@@ -205,6 +208,16 @@ termVec <- apply(m, 1, function(x) paste(allTerms[which(x > 0)], collapse = ' ')
 
 # convert dataframe to transactions dataset
 trans <- as(strsplit(termVec, " "), "transactions")
+
+# plot item frequency
+# relative item frequency plot
+itemFrequencyPlot(trans, topN = 20,
+                  main = 'Relative Item Frequency Plot')
+
+
+# absolute item frequency plot
+itemFrequencyPlot(trans, type = 'absolute', topN = 20,
+                  main = 'Absolute Item Frequency Plot')
 ############################################
 # save data
 ############################################
