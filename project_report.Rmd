@@ -1,0 +1,25 @@
+---
+title: "IST 707 - Project Report"
+author: "Group 1"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  word_document:
+    toc: yes
+    reference_docx: template.docx
+---
+
+# Introduction
+
+
+# Analysis
+
+### About the Data
+
+### Models
+
+
+# Results
+
+
+# Conclusion
+
