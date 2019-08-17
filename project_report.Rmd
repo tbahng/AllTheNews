@@ -8,6 +8,11 @@ output:
     reference_docx: template.docx
 ---
 
+```{r, include=FALSE}
+# set global options
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
 # Introduction
 
 
