@@ -7,12 +7,15 @@
 # references to string cleaning operations
 # https://stackoverflow.com/questions/31348453/how-do-i-clean-twitter-data-in-r
 rm(list = ls())
+
 #################################################################
 # load libraries
 #################################################################
+
 library(data.table)
 library(stringr)
 library(magrittr)
+library(here)
 
 #################################################################
 # define functions
@@ -61,10 +64,11 @@ blankToNA <- function(x) {
 #################################################################
 # read datasets
 #################################################################
+
 # Read longform.csv (original data)
 pth <- "data/original_data/longform.csv"
 system.time(
-  dat <- fread(pth)
+ dat <- fread(pth)
 )
 
 # Read AFINN lexicon
@@ -73,9 +77,11 @@ affin <- read.table(file = pth,
                     sep = '\t', 
                     quote = '',
                     stringsAsFactors = FALSE)
+
 #################################################################
 # structure of dataset
 #################################################################
+
 str(dat)
 # 204135 observations of 12 variables; meaning there are 204135 unique news articles
 # the variable 'id' is the unique identifier and is of type integer
