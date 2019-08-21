@@ -4,9 +4,11 @@
 # results will be saved into 'data/analysis_arules.rda'
 
 rm(list = ls())
+
 #################################################################
 # load libraries
 #################################################################
+
 library(plyr)
 library(dplyr)
 library(arules)
@@ -21,6 +23,7 @@ library(gridExtra)
 #################################################################
 # define functions
 #################################################################
+
 # function to convert named vector to dataframe
 vec_to_df <- function(vec, nm) {
   df <- as.list(vec) %>% data.frame(.) %>% t
