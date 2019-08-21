@@ -6,9 +6,11 @@
 # Results are saved to 'data/2Transform.rda'
 
 rm(list = ls())
+
 #################################################################
 # load libraries
 #################################################################
+
 library(tm)
 library(slam)
 library(magrittr)
@@ -16,9 +18,11 @@ library(ggplot2)
 library(reshape2)
 library(dplyr)
 library(arules)
+
 #################################################################
 # load data
 #################################################################
+
 load('data/1Extract.rda')
 # convert data to data.frame
 dat <- as.data.frame(dat)
@@ -26,6 +30,7 @@ dat <- as.data.frame(dat)
 #################################################################
 # subset data - exclude variables that will not be used in analysis
 #################################################################
+
 # these variables will not be used in any analysis
 exclVars <- c('url')
 dat <- dat[, !names(dat) %in% exclVars]
@@ -33,6 +38,7 @@ dat <- dat[, !names(dat) %in% exclVars]
 #################################################################
 # Assess Missing Values
 #################################################################
+
 # Total missing values by variable
 data.frame(
   varName = factor(names(dat), levels = names(dat)),
