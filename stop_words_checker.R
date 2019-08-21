@@ -1,8 +1,11 @@
 # this file checks a body of text (i.e. a report) for words that shouldn't belong in the text
 # All Assignments must be written in the third person (no use of I, you, we, us, etc)
+
 rm(list = ls())
+
 library(tm)
 library(magrittr)
+
 #setwd('C:/Users/ke392d/Desktop/Master/LTP_Learning Together Program/LTP - Masters Data Science/ist707')
 # Function to parse a text string into n-word combinations
 parse_words <- function(x, n = 3) {
