@@ -1,3 +1,12 @@
+###############################
+# IST707 Project              #
+# Group 1                     #
+# Thomas Bahng, Ted Tinker,   #
+# Tim Zalk, Michael Znidarsic #
+#                             #
+# 1Extract.R                  #
+###############################
+
 # This file performs additional transformation to the dataset saved in 'data/1Extract.rda'
 # primary transformations will be to:
 ## subset the data to relevant observations
@@ -18,6 +27,13 @@ library(ggplot2)
 library(reshape2)
 library(dplyr)
 library(arules)
+library(viridis)
+
+#################################################################
+# load functions
+#################################################################
+
+source("fun.R")
 
 #################################################################
 # load data
@@ -70,7 +86,8 @@ dfNA <- melt(dfNA, id = 'publication')
 # it appears that observations where the publication is missing contain mostly missing values across most of the variables.
 ggplot(dfNA, aes(x = variable, y = publication)) +
   geom_tile(aes(fill = value), color = 'black') +
-  scale_fill_gradientn(colors = c('darkblue','orange')) +
+#  scale_fill_gradientn(colors = c('darkblue','orange')) +
+  scale_fill_viridis(option = 'inferno', direction = 1, begin = 0.1, end = 0.9) +
   labs(fill = '% NA') + 
   ggtitle("Percent Missing Values by Variable")
 
@@ -100,7 +117,8 @@ dfNA$publication = pubs
 dfNA <- melt(dfNA, id = 'publication')
 ggplot(dfNA, aes(x = variable, y = publication)) +
   geom_tile(aes(fill = value), color = 'black') +
-  scale_fill_gradientn(colors = c('darkblue','orange')) +
+#  scale_fill_gradientn(colors = c('darkblue','orange')) +
+  scale_fill_viridis(option = 'inferno', direction = 1, begin = 0.1, end = 0.9) +
   labs(fill = '% NA') + 
   ggtitle("Percent Missing Values by Variable")
 
