@@ -112,7 +112,7 @@ sum(dat$url == '')
 # are there any variables suitable to be used as class labels?
 #################################################################
 sapply(dat, function(x) length(unique(x)))
-# potential class variables are 'publication', 'category', 'digital', and 'section'
+# potential class variables are 'publication', 'category', and 'digital'
 
 #################################################################
 # look across variables and count the missing values
@@ -173,8 +173,9 @@ class(dat$digital)
 # [digital] this variable has 11020 missing values
 sum(is.na(dat$digital))
 
-# [section]
-
+# [section] half of the data does not have 'section'. This may not be a good candidate for class label.
+summary(nchar(dat$section))
+table(dat$section == '', dat$year)
 #################################################################
 # variable transformation
 #################################################################
@@ -186,7 +187,9 @@ system.time({
 })
 
 # check that blanks (i.e. '') converted to NA.
-sapply(dat, function(x) sum(is.na(x)))
+sapply(dat, function(x) sum(x == '', na.rm = TRUE)) # blank values
+sapply(dat, function(x) sum(is.na(x))) # NA values
+
 
 # clean character variables 
 # replace any non UTF-8 with ''
@@ -196,7 +199,7 @@ sapply(dat, function(x) sum(is.na(x)))
 # assess magnitude of unclean text for each character variable
 sapply(dat[, strVars, with = FALSE], function(x) sum(check_text(x)))
 
-# based on the assessment the variables 'title', 'author' and 'content' need cleaning
+# based on the assessment, the variables 'title', 'author' and 'content' need cleaning
 dirtyVars <- c('title','author','content')
 
 system.time({
