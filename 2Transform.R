@@ -28,6 +28,7 @@ library(reshape2)
 library(dplyr)
 library(arules)
 library(viridis)
+library(tidytext)
 
 #################################################################
 # load functions
@@ -90,7 +91,8 @@ ggplot(dfNA, aes(x = variable, y = publication)) +
   scale_fill_viridis(option = 'inferno', direction = 1, begin = 0.1, end = 0.9) +
   labs(fill = '% NA') + 
   ggtitle("Percent Missing Values by Variable")
-
+# 11 publications have 100% missing section
+# the variable 'section' might be good to remove altogether due to missing values.
 #################################################################
 # subset data
 # subset the data down to observations with complete cases in specified variables
@@ -145,12 +147,57 @@ df <- df[, !names(df) %in% exclVars]
 summary(nchar(df$fullText))
 
 #################################################################
+# subset data
+# remove the variable 'section' given prevalence of missing values
+# subset data.frame (df) down to only the most prolific authors across the 18 publications
+#################################################################
+# remove 'section' from data.frame
+exclVars <- c('section')
+df <- df[, !names(df) %in% exclVars]
+# remove observations where no author is mentioned
+impVars <- c('author')
+df <- df[complete.cases(df[,impVars]),] %>% droplevels()
+
+#################################################################
+# sample the data
+# subset data down to only the most prolific authors across the 18 publications
+# for each publication keep just the top 80% of authors by number of articles
+# this will help to ensure the data only keeps the "main voices" of each publication
+#################################################################
+# assess the frequency of most prolific authors overall
+# it appears that some author names are not real names (e.g. "Breitbart News", "Associated Press", "NPR Staff", etc.)
+head(sort(table(df$author), decreasing = TRUE))
+# assess the count of unique authors by publication
+length(unique(df$author))
+tapply(df$author, df$publication, function(x) length(unique(x)))
+
+top4Pubs <- table(df$publication) %>% sort(., decreasing = TRUE) %>% 
+  head(4) %>% names
+
+# distributions of number of articles by author faceted by top 4 publications
+# vast majority of authors in each publication don't write as many articles
+par(mfrow = c(2,2))
+sapply(top4Pubs, plot_hist_author) %>% invisible
+par(mfrow = c(1,1))
+
+# for each publication, subset the data to only the authors that make up top 80% of observations
+rownames(df) <- NULL
+pubs <- levels(df$publication)
+keepRowsList <- lapply(pubs, function(x) which(df$author %in% get_top_authors(x)))
+keepRows <- do.call('c', keepRowsList)
+df <- df[keepRows,] %>% droplevels()
+
+#################################################################
 # create document term matrix
 # Because sentiment analysis will be performed, stopwords will not include affin lexicon
 # Stopwords will include explicit mention of publication
 # Week 9 Text Mining states that stemming can be useful for topic-oriented classification (i.e. section)
+# Because stemming will inherently affect sentiment analysis, two document term matrices will be created
+# One will be stemmed and the other not stemmed
 # the document term matrix will be filtered for terms with count frequencies greater than a specified threshold
 #################################################################
+
+## Created Document Term Matrix WITH STEMMING
 # start the clock
 ptm <- proc.time()
 # create an object inheriting from VectorSource; required for Corpus
@@ -203,6 +250,64 @@ sapply(
 minTermFreq <- 2000
 dtm <- dtm[, which(termTotals > minTermFreq)]
 
+#################################################################
+## Created Document Term Matrix WITHOUT STEMMING
+#################################################################
+# start the clock
+ptm <- proc.time()
+# create an object inheriting from VectorSource; required for Corpus
+words.vec <- VectorSource(df$fullText)
+# define a corpora; This will be used as we go further along text mining
+system.time(
+  words.corpus <- Corpus(words.vec)
+)
+
+# remove punctuation
+words.corpus <- tm_map(words.corpus, removePunctuation)
+# remove numbers
+words.corpus <- tm_map(words.corpus, removeNumbers)
+# convert text to lower case
+words.corpus <- tm_map(words.corpus, content_transformer(tolower))
+# remove stop words
+words.corpus <- tm_map(words.corpus, removeWords, skipWords)
+# remove white space
+words.corpus <- tm_map(words.corpus, stripWhitespace)
+
+# construct a document term matrix
+dtm_sentiment <- DocumentTermMatrix(words.corpus)
+# time elapsed
+proc.time() - ptm
+
+#################################################################
+# Begin Sentiment Analysis
+#################################################################
+
+# tidy document term matrix
+dtm_td <- tidy(dtm_sentiment)
+# create sentiment vector using afinn
+dtm_sentiments <- dtm_td %>%
+  left_join(get_sentiments("afinn"), by = c(term = "word"))
+doc_sentiments <- dtm_sentiments %>%
+  group_by(document) %>%
+  summarise(score = sum(score, na.rm = TRUE)) %>% as.data.frame
+doc_sentiments <- doc_sentiments %>% .[order(as.numeric(.$document)),]
+
+# plot of top words contributing to positive/negative sentiment
+# using bing sentiment
+dtm_sentiments <- dtm_td %>%
+  inner_join(get_sentiments("bing"), by = c(term = "word"))
+dtm_sentiments %>%
+  count(sentiment, term, wt = count) %>%
+  filter(n >= 16000) %>%
+  mutate(n = ifelse(sentiment == "negative", -n, n)) %>%
+  mutate(term = reorder(term, n)) %>%
+  ggplot(aes(term, n, fill = sentiment)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  ylab("Contribution to sentiment") +
+  ggtitle("Top Terms By Sentiment")
+
+
 ############################################
 # Create item matrix (i.e. transactions data set)
 # for association rule mining
@@ -249,5 +354,6 @@ save(
   df, # transformed original dataset
   dtm, # document term matrix
   trans, # transactions dataset
+  doc_sentiments, # sentiment score by document
   file = "data/2Transform.rda"
 )

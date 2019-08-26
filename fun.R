@@ -49,3 +49,22 @@ blankToNA <- function(x) {
   x[x == ''] <- NA
   return(x)
 }
+
+############################################################
+## Only for 2Transform.R
+# function to plot histogram of author frequency by publication
+# pub = publication name (e.g. 'Atlantic')
+plot_hist_author <- function(pub) {
+  num_publications <- df$author[df$publication == pub] %>% table %>% as.vector
+  hist(num_publications, main = pub)
+}
+# function to identify the authors that make up the top 80% of observations for a publication
+get_top_authors <- function(pub) {
+  the_table <- df$author[df$publication == pub] %>% table %>% 
+    sort(., decreasing = TRUE)
+  num_publications <- as.vector(the_table)
+  names(num_publications) <- names(the_table)
+  keep <- which(cumsum(num_publications) <= floor(.8*sum(num_publications)))
+  return(names(keep))
+}
+############################################################
