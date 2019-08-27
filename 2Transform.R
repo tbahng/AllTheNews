@@ -312,6 +312,7 @@ dtm_sentiments %>%
 # Create item matrix (i.e. transactions data set)
 # for association rule mining
 # subset to just one year [2018]
+# filter out terms that are not 
 ############################################
 # drop any unused levels from data.frame
 df <- droplevels(df)
@@ -320,15 +321,32 @@ dfArm <- df[which(df$year == 2018),] %>% droplevels()
 # create a mini-document term matrix to process the fullText
 # read the full corpus of text
 corp <- Corpus(VectorSource(dfArm$fullText))
-
+# ignore extremely rare words i.e. terms that appear in less then 1% of the documents
+ndocs <- length(corp)
+minTermFreq <- ndocs * 0.01
+# ignore overly common words i.e. terms that appear in more than 100% of the documents
+maxTermFreq <- ndocs * 1
+# create document term matrix; only include word lengths 3-15 characters
 dtm2 <- DocumentTermMatrix(corp,
                           control = list(
                             stopwords = skipWords, 
                             removePunctuation = TRUE,
                             removeNumbers = TRUE,
                             tolower = TRUE,
-                            stripWhitespace = TRUE
+                            stripWhitespace = TRUE,
+                            bounds = list(global = c(minTermFreq, maxTermFreq)),
+                            wordLengths=c(3, 15)
                           ))
+
+# assess the term frequency
+termTotals <- col_sums(dtm2)
+
+# plot top six terms
+head(sort(termTotals, decreasing = T)) %>% barplot(., main = 'Top 6 Terms')
+
+# 75% of the terms have less than frequency count of 271
+quantile(termTotals)
+
 # for each document get all the terms used
 allTerms <- dtm2$dimnames$Terms
 # get combined terms by document
@@ -342,7 +360,6 @@ trans <- as(strsplit(termVec, " "), "transactions")
 # relative item frequency plot
 itemFrequencyPlot(trans, topN = 20,
                   main = 'Relative Item Frequency Plot')
-
 
 # absolute item frequency plot
 itemFrequencyPlot(trans, type = 'absolute', topN = 20,
