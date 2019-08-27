@@ -344,7 +344,7 @@ termTotals <- col_sums(dtm2)
 # plot top six terms
 head(sort(termTotals, decreasing = T)) %>% barplot(., main = 'Top 6 Terms')
 
-# 75% of the terms have less than frequency count of 271
+# 75% of the terms have less than frequency count of 264
 quantile(termTotals)
 
 # for each document get all the terms used
