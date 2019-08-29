@@ -307,7 +307,6 @@ dtm_sentiments %>%
   ylab("Contribution to sentiment") +
   ggtitle("Top Terms By Sentiment")
 
-
 ############################################
 # Create item matrix (i.e. transactions data set)
 # for association rule mining
@@ -364,12 +363,20 @@ itemFrequencyPlot(trans, topN = 20,
 # absolute item frequency plot
 itemFrequencyPlot(trans, type = 'absolute', topN = 20,
                   main = 'Absolute Item Frequency Plot')
+
+############################################
+# Normalize DTM
+############################################
+dtmNorm <- weightTfIdf(dtm)
+
+
 ############################################
 # save data
 ############################################
 save(
   df, # transformed original dataset
   dtm, # document term matrix
+  dtmNorm, # normalized document term matrix, i.e. tf-idf
   trans, # transactions dataset
   doc_sentiments, # sentiment score by document
   file = "data/2Transform.rda"
