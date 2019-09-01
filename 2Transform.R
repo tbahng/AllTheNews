@@ -379,6 +379,6 @@ save(
   dtmNorm, # normalized document term matrix, i.e. tf-idf
   trans, # transactions dataset
   doc_sentiments, # sentiment score by document
-  dtm_sentiment,
+  dtm_sentiment, # document term matrix without stemming for sentiment extraction
   file = "data/2Transform.rda"
 )
