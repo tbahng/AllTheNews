@@ -325,16 +325,16 @@ ndocs <- length(corp)
 minTermFreq <- ndocs * 0.01
 # ignore overly common words i.e. terms that appear in more than 100% of the documents
 maxTermFreq <- ndocs * 1
-# create document term matrix; only include word lengths 3-15 characters
+# create document term matrix; only include word lengths 6-15 characters
 dtm2 <- DocumentTermMatrix(corp,
                           control = list(
-                            stopwords = skipWords, 
+                            stopwords = stopwords(), 
                             removePunctuation = TRUE,
                             removeNumbers = TRUE,
                             tolower = TRUE,
                             stripWhitespace = TRUE,
                             bounds = list(global = c(minTermFreq, maxTermFreq)),
-                            wordLengths=c(3, 15)
+                            wordLengths=c(5, 15)
                           ))
 
 # assess the term frequency
@@ -343,7 +343,7 @@ termTotals <- col_sums(dtm2)
 # plot top six terms
 head(sort(termTotals, decreasing = T)) %>% barplot(., main = 'Top 6 Terms')
 
-# 75% of the terms have less than frequency count of 264
+# 75% of the terms have less than frequency count of 229
 quantile(termTotals)
 
 # for each document get all the terms used
