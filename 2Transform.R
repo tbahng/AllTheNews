@@ -307,6 +307,25 @@ dtm_sentiments %>%
   ylab("Contribution to sentiment") +
   ggtitle("Top Terms By Sentiment")
 
+# Overall numeric sentiment was net positive for `r nrow(doc_sentiments)` news articles 
+# used in this analysis. However, the distribution of positive and negative articles 
+# shows a clear picture of an approximately normal curve that is slightly 
+# left-skewed (negative). Boxplots indicate that there are far more extreme 
+# points of negative sentiment than there are positive.
+
+# histogram of sentiment score
+ggplot(doc_sentiments, aes(x = score)) +
+  geom_histogram() +
+  ggtitle("Histogram of Sentiment Score")
+
+# boxplots of sentiment score faceted by positive and negative sentiment
+dfSentiment <- cbind(doc_sentiments, isPositive = doc_sentiments$score > 0)
+ggplot(dfSentiment, aes(x = factor(0), y = score, fill = isPositive)) +
+  geom_violin() + geom_boxplot(width = 0.4) +
+  theme_bw() +
+  facet_wrap(~ isPositive) + ylab("Sentiment Score") +
+  xlab("Negative/Positive") + ggtitle("Sentiment Distribution by Class")
+
 ############################################
 # Create item matrix (i.e. transactions data set)
 # for association rule mining
@@ -367,6 +386,15 @@ itemFrequencyPlot(trans, type = 'absolute', topN = 20,
 ############################################
 # Normalize DTM
 ############################################
+# boxplot of article word counts
+data.frame(length = row_sums(dtm)) %>%
+  ggplot(., aes(x = factor(0), y = length, fill = TRUE)) +
+  geom_violin() + geom_boxplot(width = 0.4) +
+  theme_bw() + theme(legend.position="none") +
+  ylab("Article Word Counts") +
+  ggtitle("Density of Article Length")
+# given the large variability in the length of articles, 
+# this normalization step applies Tf-Idf weighting to the document term matrix.
 dtmNorm <- weightTfIdf(dtm)
 
 
