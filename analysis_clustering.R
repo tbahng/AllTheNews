@@ -112,3 +112,13 @@ for(i in names(idf)){
 
 mNorm <- tfidf
 rm(tf, idf, tfidf)
+
+
+##################################
+# Hierarchial Clustering
+##################################
+d <- dist(dtm, method = "euclidean")
+hc <- hclust(d, method = "complete")
+plot(hc, cex = 0.6, hang = -1)
+
+
