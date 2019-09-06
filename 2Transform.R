@@ -347,11 +347,11 @@ maxTermFreq <- ndocs * 1
 # create document term matrix; only include word lengths 6-15 characters
 dtm2 <- DocumentTermMatrix(corp,
                           control = list(
-                            stopwords = stopwords(), 
                             removePunctuation = TRUE,
                             removeNumbers = TRUE,
                             tolower = TRUE,
                             stripWhitespace = TRUE,
+                            stopwords = skipWords, 
                             bounds = list(global = c(minTermFreq, maxTermFreq)),
                             wordLengths=c(5, 15)
                           ))
