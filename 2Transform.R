@@ -295,9 +295,15 @@ dtm_td <- tidy(dtm_sentiment)
 # create sentiment vector using afinn
 dtm_sentiments <- dtm_td %>%
   left_join(get_sentiments("afinn"), by = c(term = "word"))
+
+# doc_sentiments <- dtm_sentiments %>%
+#   group_by(document) %>%
+#   summarise(score = sum(score, na.rm = TRUE)) %>% as.data.frame
+# doc_sentiments <- doc_sentiments %>% .[order(as.numeric(.$document)),]
+
 doc_sentiments <- dtm_sentiments %>%
   group_by(document) %>%
-  summarise(score = sum(score, na.rm = TRUE)) %>% as.data.frame
+  summarise(value = sum(value, na.rm = TRUE)) %>% as.data.frame
 doc_sentiments <- doc_sentiments %>% .[order(as.numeric(.$document)),]
 
 # plot of top words contributing to positive/negative sentiment
@@ -322,13 +328,23 @@ dtm_sentiments %>%
 # points of negative sentiment than there are positive.
 
 # histogram of sentiment score
-ggplot(doc_sentiments, aes(x = score)) +
+# ggplot(doc_sentiments, aes(x = score)) +
+#   geom_histogram() +
+#   ggtitle("Histogram of Sentiment Score")
+ggplot(doc_sentiments, aes(x = value)) +
   geom_histogram() +
-  ggtitle("Histogram of Sentiment Score")
+  ggtitle("Histogram of Sentiment Score") +
+  xlim(-50, 50)
 
 # boxplots of sentiment score faceted by positive and negative sentiment
-dfSentiment <- cbind(doc_sentiments, isPositive = doc_sentiments$score > 0)
-ggplot(dfSentiment, aes(x = factor(0), y = score, fill = isPositive)) +
+# dfSentiment <- cbind(doc_sentiments, isPositive = doc_sentiments$score > 0)
+# ggplot(dfSentiment, aes(x = factor(0), y = score, fill = isPositive)) +
+#   geom_violin() + geom_boxplot(width = 0.4) +
+#   theme_bw() +
+#   facet_wrap(~ isPositive) + ylab("Sentiment Score") +
+#   xlab("Negative/Positive") + ggtitle("Sentiment Distribution by Class")
+dfSentiment <- cbind(doc_sentiments, isPositive = doc_sentiments$value > 0)
+ggplot(dfSentiment, aes(x = factor(0), y = value, fill = isPositive)) +
   geom_violin() + geom_boxplot(width = 0.4) +
   theme_bw() +
   facet_wrap(~ isPositive) + ylab("Sentiment Score") +
