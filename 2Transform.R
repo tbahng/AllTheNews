@@ -174,6 +174,14 @@ tapply(df$author, df$publication, function(x) length(unique(x)))
 top4Pubs <- table(df$publication) %>% sort(., decreasing = TRUE) %>% 
   head(4) %>% names
 
+# distribution of publications
+table(df$publication) %>% 
+  sort(., decreasing = TRUE) %>% 
+  melt %>% ggplot(., aes(x = reorder(Var1,value), y = value, fill = Var1)) +
+  geom_col() + coord_flip() + xlab("Publication") +
+  theme(legend.title = element_blank()) +
+  ggtitle("Number of Articles by Publication")
+
 # distributions of number of articles by author faceted by top 4 publications
 # vast majority of authors in each publication don't write as many articles
 par(mfrow = c(2,2))
