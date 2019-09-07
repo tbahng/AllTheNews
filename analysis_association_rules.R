@@ -102,134 +102,135 @@ itemFrequencyPlot(trans, type = 'absolute', topN = 20,
 # and patterns that emerge from the heatmap.
 #################################################################
 # initialize values for simulation matrix
-suppVal <- seq(0.05, 0.2, 0.05)
-confVal <- seq(0.8, 1, 0.1)
-# simulate number of rules generated
-mNumRules <- matrix(nrow = length(suppVal), ncol = length(confVal))
-rownames(mNumRules) <- suppVal
-colnames(mNumRules) <- confVal
-for (i in 1:length(suppVal)) {
-  for (j in 1:length(confVal)) {
-    r <- apriori(trans, parameter = list(supp = suppVal[i], conf = confVal[j]))
-    if (length(r) > 0) {
-      mNumRules[i,j] <- length(r)
-    }
-  }
-}
-mNumRules %>% kable(., caption = "Simulate: Number of Rules")
-ggplot(melt(mNumRules), aes(Var1,Var2, fill=value)) + geom_raster() +
-  geom_text(aes(label = round(value, 1)), size = 3) +
-  scale_fill_gradient(low = 'white', high = 'red') +
-  xlab("min_support") + ylab("min_confidence") +
-  labs(fill = 'Rules')+
-  ggtitle("Heatmap: Number of Rules")
-# From the above matrix and heatmap, by setting min confidence to 0.9 and min support to 0.05 a total of 1435787 rules can be generated.
+# suppVal <- seq(0.05, 0.2, 0.05)
+# confVal <- seq(0.8, 1, 0.1)
+# # simulate number of rules generated
+# mNumRules <- matrix(nrow = length(suppVal), ncol = length(confVal))
+# rownames(mNumRules) <- suppVal
+# colnames(mNumRules) <- confVal
+# for (i in 1:length(suppVal)) {
+#   for (j in 1:length(confVal)) {
+#     r <- apriori(trans, parameter = list(supp = suppVal[i], conf = confVal[j]))
+#     if (length(r) > 0) {
+#       mNumRules[i,j] <- length(r)
+#     }
+#   }
+# }
+# mNumRules %>% kable(., caption = "Simulate: Number of Rules")
+# ggplot(melt(mNumRules), aes(Var1,Var2, fill=value)) + geom_raster() +
+#   geom_text(aes(label = round(value, 1)), size = 3) +
+#   scale_fill_gradient(low = 'white', high = 'red') +
+#   xlab("min_support") + ylab("min_confidence") +
+#   labs(fill = 'Rules')+
+#   ggtitle("Heatmap: Number of Rules")
+# From the above matrix and heatmap, by setting min confidence to 0.9 and min support to 0.05 a total of 147876 rules can be generated.
 # This seems like a good baseline parameter setting for the apriori function. The simulations below will assess mean rule size and quality
 
 # simulate average size of rules (k)
 # the mean size of rule itemsets is 4
 # given minimum confidence of 0.9 and minimum support of 0.05
 # size of 5 might contain diverse length of rule itemsets that are not too large or small.
-mSize <- matrix(nrow = length(suppVal), ncol = length(confVal))
-rownames(mSize) <- suppVal
-colnames(mSize) <- confVal
-for (i in 1:length(suppVal)) {
-  for (j in 1:length(confVal)) {
-    r <- apriori(trans, parameter = list(supp = suppVal[i], conf = confVal[j]))
-    if (length(r) > 0) mSize[i,j] <- signif(mean(size(r)),0)
-  }
-}
-mSize %>% kable(., caption = "Simulate: Mean Size of Rules")
-ggplot(melt(mSize), aes(Var1,Var2, fill=value)) + geom_raster() +
-  geom_text(aes(label = round(value, 1))) +
-  scale_fill_gradient(low = 'white', high = 'red') +
-  xlab("min_support") + ylab("min_confidence") +
-  labs(fill = 'Size')+ 
-  ggtitle("Heatmap: Mean Size of Rules")
+# mSize <- matrix(nrow = length(suppVal), ncol = length(confVal))
+# rownames(mSize) <- suppVal
+# colnames(mSize) <- confVal
+# for (i in 1:length(suppVal)) {
+#   for (j in 1:length(confVal)) {
+#     r <- apriori(trans, parameter = list(supp = suppVal[i], conf = confVal[j]))
+#     if (length(r) > 0) mSize[i,j] <- signif(mean(size(r)),0)
+#   }
+# }
+# mSize %>% kable(., caption = "Simulate: Mean Size of Rules")
+# ggplot(melt(mSize), aes(Var1,Var2, fill=value)) + geom_raster() +
+#   geom_text(aes(label = round(value, 1))) +
+#   scale_fill_gradient(low = 'white', high = 'red') +
+#   xlab("min_support") + ylab("min_confidence") +
+#   labs(fill = 'Size')+ 
+#   ggtitle("Heatmap: Mean Size of Rules")
 
 # simulate average support quality
-# given minsupp = 0.05 and minconf = 0.9, an average support of 0.071 can be expected
-# an average support of 0.071 shows fairly high potential for including strong rules.
-mSupp <- matrix(nrow = length(suppVal), ncol = length(confVal))
-rownames(mSupp) <- suppVal
-colnames(mSupp) <- confVal
-
-for (i in 1:length(suppVal)) {
-  for (j in 1:length(confVal)) {
-    r <- apriori(trans, parameter = list(supp = suppVal[i], conf = confVal[j]))
-    if (length(r) > 0) mSupp[i,j] <- signif(mean(quality(r)$support), 2)
-  }
-}
-mSupp %>% kable(., caption = "Simulate: Mean Support of Rules")
-ggplot(melt(mSupp), aes(Var1,Var2, fill=value)) + geom_raster() +
-  geom_text(aes(label = round(value, 2))) +
-  scale_fill_gradient(low = "white", high = "red") +
-  xlab("min_support") + ylab("min_confidence") +
-  labs(fill = "Support")+
-  ggtitle("Heatmap: Mean Support Quality")
+# given minsupp = 0.05 and minconf = 0.9, an average support of 0.065 can be expected
+# an average support of 0.065 shows fairly high potential for including strong rules.
+# mSupp <- matrix(nrow = length(suppVal), ncol = length(confVal))
+# rownames(mSupp) <- suppVal
+# colnames(mSupp) <- confVal
+# 
+# for (i in 1:length(suppVal)) {
+#   for (j in 1:length(confVal)) {
+#     r <- apriori(trans, parameter = list(supp = suppVal[i], conf = confVal[j]))
+#     if (length(r) > 0) mSupp[i,j] <- signif(mean(quality(r)$support), 2)
+#   }
+# }
+# mSupp %>% kable(., caption = "Simulate: Mean Support of Rules")
+# ggplot(melt(mSupp), aes(Var1,Var2, fill=value)) + geom_raster() +
+#   geom_text(aes(label = round(value, 2))) +
+#   scale_fill_gradient(low = "white", high = "red") +
+#   xlab("min_support") + ylab("min_confidence") +
+#   labs(fill = "Support")+
+#   ggtitle("Heatmap: Mean Support Quality")
 
 # simulate average confidence quality
-# the average confidence to be expected from a minimum support parameter of 0.05 and minimum confidence parameter of 0.9 is 0.94
-mConf <- matrix(nrow = length(suppVal), ncol = length(confVal))
-rownames(mConf) <- suppVal
-colnames(mConf) <- confVal
-for (i in 1:length(suppVal)) {
-  for (j in 1:length(confVal)) {
-    r <- apriori(trans, parameter = list(supp = suppVal[i], conf = confVal[j]))
-    if (length(r) > 0) mConf[i,j] <- signif(mean(quality(r)$confidence), 2)
-  }
-}
-mConf %>% kable(., caption = "Simulate: Mean Confidence of Rules")
-ggplot(melt(mConf), aes(Var1,Var2, fill=value)) + geom_raster() +
-  geom_text(aes(label = round(value, 2))) +
-  scale_fill_gradient(low = "white", high = "red") +
-  xlab("min_support") + ylab("min_confidence") +
-  labs(fill = "Support")+
-  ggtitle("Heatmap: Mean Confidence Quality")
+# the average confidence to be expected from a minimum support parameter of 0.05 and minimum confidence parameter of 0.9 is 1
+# mConf <- matrix(nrow = length(suppVal), ncol = length(confVal))
+# rownames(mConf) <- suppVal
+# colnames(mConf) <- confVal
+# for (i in 1:length(suppVal)) {
+#   for (j in 1:length(confVal)) {
+#     r <- apriori(trans, parameter = list(supp = suppVal[i], conf = confVal[j]))
+#     if (length(r) > 0) mConf[i,j] <- signif(mean(quality(r)$confidence), 2)
+#   }
+# }
+# mConf %>% kable(., caption = "Simulate: Mean Confidence of Rules")
+# ggplot(melt(mConf), aes(Var1,Var2, fill=value)) + geom_raster() +
+#   geom_text(aes(label = round(value, 2))) +
+#   scale_fill_gradient(low = "white", high = "red") +
+#   xlab("min_support") + ylab("min_confidence") +
+#   labs(fill = "Support")+
+#   ggtitle("Heatmap: Mean Confidence Quality")
 
 # simulate average lift quality
-# An average lift value of 1.1 can be expected from a minimum support parameter of 0.05 and minimum confidence parameter of 0.9
+# An average lift value of 1.2 can be expected from a minimum support parameter of 0.05 and minimum confidence parameter of 0.8
 # The average lift is about the same in all simulations.
-mLift <- matrix(nrow = length(suppVal), ncol = length(confVal))
-rownames(mLift) <- suppVal
-colnames(mLift) <- confVal
-for (i in 1:length(suppVal)) {
-  for (j in 1:length(confVal)) {
-    r <- apriori(trans, parameter = list(supp = suppVal[i], conf = confVal[j]))
-    if (length(r) > 0) mLift[i,j] <- signif(mean(quality(r)$lift), 2)
-  }
-}
-mLift %>% kable(., caption = "Simulate: Mean Lift of Rules")
-ggplot(melt(mLift), aes(Var1,Var2, fill=value)) + geom_raster() +
-  geom_text(aes(label = round(value, 2))) +
-  scale_fill_gradient(low = "white", high = "red") +
-  xlab("min_support") + ylab("min_confidence") +
-  ggtitle("Heatmap: Mean Lift Quality")
+# mLift <- matrix(nrow = length(suppVal), ncol = length(confVal))
+# rownames(mLift) <- suppVal
+# colnames(mLift) <- confVal
+# for (i in 1:length(suppVal)) {
+#   for (j in 1:length(confVal)) {
+#     r <- apriori(trans, parameter = list(supp = suppVal[i], conf = confVal[j]))
+#     if (length(r) > 0) mLift[i,j] <- signif(mean(quality(r)$lift), 2)
+#   }
+# }
+# mLift %>% kable(., caption = "Simulate: Mean Lift of Rules")
+# ggplot(melt(mLift), aes(Var1,Var2, fill=value)) + geom_raster() +
+#   geom_text(aes(label = round(value, 2))) +
+#   scale_fill_gradient(low = "white", high = "red") +
+#   xlab("min_support") + ylab("min_confidence") +
+#   ggtitle("Heatmap: Mean Lift Quality")
 
 #################################################################
 # Generate Rules
 #################################################################
 # generate rules based on pre-determined confidence and support thresholds
-rules <- apriori(trans, parameter = list(supp = 0.05, conf = 0.9))
+rules <- apriori(trans, parameter = list(supp = 0.05, conf = 0.8))
 # summary of rules
-summary(rules)
-# 1435787 rules generated
-# mean size of rule itemsets is k = 3.9
-# mean support of rules is 0.07065
-# mean confidence of rules is 0.9357
-# mean lift of rules is 1.140
+summary(rules)@quality %>% kable(., caption = "Quality of Rules")
+# 226458 rules generated
+# mean size of rule itemsets is k = 4.4
+# mean support of rules is 0.06
+# mean confidence of rules is 0.84
+# mean lift of rules is 1.5
 
 # print sample of rules
 ruledf = data.frame(
   lhs = labels(lhs(rules)),
   rhs = labels(rhs(rules)), 
   rules@quality)
+ruledf <- ruledf[ruledf$lhs != '{}',]
 head(ruledf) %>% kable_it(., "Sample of Rules Generated")
 
 # plot distributions of rule quality
-# the distribution of support is right-skewed and includes very high support values upwards of 40%
-# the distribution of confidence shows more spread and most dense around 0.93
-# the distribution of lift shows that most values are between 1 and 1.1. Some values are upwards of 2.3.
+# the distribution of support is right-skewed and includes very high support values upwards of 80%
+# the distribution of confidence shows more spread, is bimodal, and most dense around 82% and 100%
+# the distribution of lift shows that most values are between 1 and 1.1. Some values are upwards of 10
 ggplot(melt(ruledf[3:5]), aes(x = value, fill = variable)) +
   geom_histogram(binwidth = 0.01, alpha = 0.3) +
   facet_wrap(~variable, scales = 'free') +
@@ -241,7 +242,14 @@ ggplot(melt(ruledf[3:5]), aes(x = value, fill = variable)) +
 
 # scatterplot of rules
 # most rules with lift greater than 2.4 have less than 0.94 confidence and less than 0.2 support
-#plot(rules, main = "Scatterplot of Rules")
+plot(rules, main = "Scatterplot of Rules")
+
+# two-key plot of rules
+plot(rules, method = "two-key")
+
+# graph of rules
+subrules <- subset(rules, lift > 4.5)
+plot(subrules, method = "graph", measure = 'lift')
 
 #################################################################
 # Top 10 Rules by Support
@@ -270,7 +278,7 @@ ruledf[order(-ruledf$lift, -ruledf$support),] %>%
   head(., 10) %>%
   kable_it(., "Top 10 Rules by Lift and Support")
 # These rule itemsets are the most important rules measured by lift
-# these also display strong support (20% - 30%) and confidence (94% - 95%).
+# these also display strong support (5%% - 6%%) and confidence (81% - 92%).
 
 #################################################################
 # Targeted rules
@@ -278,9 +286,9 @@ ruledf[order(-ruledf$lift, -ruledf$support),] %>%
 #################################################################
 ruleLHS <- 'trump'
 # Generate rules based on min. support 0.01 and min. confidence 0.5
-rulesLHS <- apriori(trans, parameter = list(supp = 0.01, conf = 0.5, minlen = 2),
+rulesLHS <- apriori(trans, parameter = list(supp = 0.001, conf = 0.5, minlen = 2),
                     appearance = list(default = 'rhs', lhs = ruleLHS))
-summary(rulesLHS)
+summary(rulesLHS)@quality %>% kable(., caption = "Quality of Rules")
 
 # print sample of rules generated
 ruledfLHS = data.frame(
@@ -321,9 +329,9 @@ plot(rulesLHS, method = 'graph')
 #################################################################
 ruleRHS <- 'trump'
 # Generate rules based on min. support 0.01 and min. confidence 0.5
-rulesRHS <- apriori(trans, parameter = list(supp = 0.01, conf = 0.5, minlen = 2),
+rulesRHS <- apriori(trans, parameter = list(supp = 0.05, conf = 0.5, minlen = 2),
                     appearance = list(default = 'lhs', rhs = ruleRHS))
-summary(rulesRHS)
+summary(rulesRHS)@quality %>% kable(., caption = "Quality of Rules")
 
 # print sample of rules generated
 ruledfRHS = data.frame(
@@ -335,19 +343,19 @@ head(ruledfRHS) %>% kable_it(., "Sample of Rules Generated")
 # Top 10 Rules by Support
 ruledfRHS[order(ruledfRHS$support, decreasing = TRUE),] %>% 
   head(., 10) %>%
-  kable_it(., "Top 10 Rules by Support Given 'trump'")
+  kable_it(., "Top 10 Rules by Support Likely to Contain 'trump'")
 
 
 # Top 10 Rules by Confidence
 ruledfRHS[order(ruledfRHS$confidence, decreasing = TRUE),] %>% 
   head(., 10) %>%
-  kable_it(., "Top 10 Rules by Confidence Given 'trump'")
+  kable_it(., "Top 10 Rules by Confidence Likely to Contain 'trump'")
 
 
 # Top 10 Rules by Lift
 ruledfRHS[order(ruledfRHS$lift, decreasing = TRUE),] %>% 
   head(., 10) %>%
-  kable_it(., "Top 10 Rules by Lift Given 'trump'")
+  kable_it(., "Top 10 Rules by Lift Likely to Contain 'trump'")
 
 # scatterplot of rules
 plot(rulesRHS)
@@ -356,4 +364,5 @@ plot(rulesRHS)
 plot(rulesRHS, method = "two-key")
 
 # graph plot of rules
-plot(rulesRHS, method = 'graph')
+subrules <- subset(rulesRHS, lift > 3.62)
+plot(subrules, method = "graph")
