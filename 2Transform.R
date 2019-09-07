@@ -90,7 +90,9 @@ ggplot(dfNA, aes(x = variable, y = publication)) +
 #  scale_fill_gradientn(colors = c('darkblue','orange')) +
   scale_fill_viridis(option = 'inferno', direction = 1, begin = 0.1, end = 0.9) +
   labs(fill = '% NA') + 
-  ggtitle("Percent Missing Values by Variable")
+  ggtitle("Percent Missing Values by Variable") +
+  theme(axis.text.x = element_text(angle = -90),
+        axis.text = element_text(size = 13))
 # 11 publications have 100% missing section
 # the variable 'section' might be good to remove altogether due to missing values.
 #################################################################
@@ -122,7 +124,9 @@ ggplot(dfNA, aes(x = variable, y = publication)) +
 #  scale_fill_gradientn(colors = c('darkblue','orange')) +
   scale_fill_viridis(option = 'inferno', direction = 1, begin = 0.1, end = 0.9) +
   labs(fill = '% NA') + 
-  ggtitle("Percent Missing Values by Variable")
+  ggtitle("Percent Missing Values by Variable") +
+  theme(axis.text.x = element_text(angle = -90),
+        axis.text = element_text(size = 13))
 
 # Dataset is now cleaned to contain complete cases in relevant variables
 # 'publication','content','date','year','month','category','digital'
