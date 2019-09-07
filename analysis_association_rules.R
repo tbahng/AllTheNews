@@ -17,6 +17,7 @@ library(ggplot2)
 library(reshape2)
 library(knitr)
 library(gridExtra)
+library(wordcloud)
 
 #################################################################
 # define functions
@@ -366,3 +367,58 @@ plot(rulesRHS, method = "two-key")
 # graph plot of rules
 subrules <- subset(rulesRHS, lift > 3.62)
 plot(subrules, method = "graph")
+
+#################################################################
+# Word Clouds
+# Articles containing high lift terms
+# Obama, Sexual Harassment, Republicans
+#################################################################
+load('data/2Transform.rda')
+
+# criteria 2018
+crit2018 <- df$year == 2018
+# criteria obama
+critObama <-  grepl('obama', tolower(df[, 'fullText']))
+# criteria sexual harassment
+critSex <- grepl('sexual harassment', tolower(df[, 'fullText']))
+# criteria republicans
+critRep <- grepl('republicans', tolower(df[, 'fullText']))
+
+# wordcloud 2018 obama articles
+# word frequencies
+vecWords <- colSums(as.matrix(dtm[critObama & crit2018,]))
+wordcloud(
+  words = names(vecWords),
+  freq = vecWords,
+  scale=c(3,0.5), 
+  max.words=150, 
+  random.order=FALSE, 
+  rot.per=0.35, 
+  colors=brewer.pal(8, 'Dark2')
+)
+
+# wordcloud 2018 sexual harassment articles
+# word frequencies
+vecWords <- colSums(as.matrix(dtm[critSex & crit2018,]))
+wordcloud(
+  words = names(vecWords),
+  freq = vecWords,
+  scale=c(3,0.5), 
+  max.words=150, 
+  random.order=FALSE, 
+  rot.per=0.35, 
+  colors=brewer.pal(8, 'Dark2')
+)
+
+# wordcloud 2018 republicans articles
+# word frequencies
+vecWords <- colSums(as.matrix(dtm[critRep & crit2018,]))
+wordcloud(
+  words = names(vecWords),
+  freq = vecWords,
+  scale=c(3,0.5), 
+  max.words=150, 
+  random.order=FALSE, 
+  rot.per=0.35, 
+  colors=brewer.pal(8, 'Dark2')
+)
