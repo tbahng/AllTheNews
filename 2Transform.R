@@ -358,7 +358,7 @@ ggplot(dfSentiment, aes(x = factor(0), y = value, fill = isPositive)) +
 # Create item matrix (i.e. transactions data set)
 # for association rule mining
 # subset to just one year [2018]
-# filter out terms that are not 
+# filter out terms that are not "meaningful"
 ############################################
 # drop any unused levels from data.frame
 df <- droplevels(df)
