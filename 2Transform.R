@@ -309,7 +309,7 @@ dtm_sentiments <- dtm_td %>%
 
 doc_sentiments <- dtm_sentiments %>%
   group_by(document) %>%
-  summarise(value = sum(value, na.rm = TRUE)) %>% as.data.frame
+  summarise(value = sum(score, na.rm = TRUE)) %>% as.data.frame
 doc_sentiments <- doc_sentiments %>% .[order(as.numeric(.$document)),]
 
 # plot of top words contributing to positive/negative sentiment
