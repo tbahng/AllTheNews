@@ -339,8 +339,7 @@ dtm_sentiments %>%
 #   ggtitle("Histogram of Sentiment Score")
 ggplot(doc_sentiments, aes(x = value)) +
   geom_histogram() +
-  ggtitle("Histogram of Sentiment Score") +
-  xlim(-50, 50)
+  ggtitle("Histogram of Sentiment Score")
 
 # boxplots of sentiment score faceted by positive and negative sentiment
 # dfSentiment <- cbind(doc_sentiments, isPositive = doc_sentiments$score > 0)
