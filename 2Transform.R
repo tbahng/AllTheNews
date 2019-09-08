@@ -190,6 +190,8 @@ pubs <- levels(df$publication)
 keepRowsList <- lapply(pubs, function(x) which(df$author %in% get_top_authors(x)))
 keepRows <- do.call('c', keepRowsList)
 df <- df[keepRows,] %>% droplevels()
+# remove duplicate observations
+df <- df[!duplicated(df$id),] %>% droplevels()
 
 # distribution of publications
 table(df$publication) %>% 
