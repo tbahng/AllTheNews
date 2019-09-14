@@ -134,9 +134,19 @@ dtm.pubs <- dtm
 dtm.pubs$dimnames$Docs <- df$publication
 dtm.matrix <- as.matrix(dtm.pubs)
 
-set.seed(12)
-sample.rate <- 0.1
-sampled.dtm.matrix <- dtm.matrix[sample(dtm.matrix, (nrow(dtm.matrix) * sample.rate), replace = FALSE), ]
+#set.seed(987)
+sample.rate <- 0.01
+rows <- sample(nrow(dtm.matrix), (nrow(dtm.matrix) * sample.rate), replace = FALSE)
+sampled.dtm.matrix = dtm.matrix[rows, ]
+
 d <- dist(sampled.dtm.matrix, method = "euclidean")
 hc <- hclust(d, method = "ward.D")
-plot(hc)
+hcd <- as.dendrogram(hc)
+
+par(mfrow=c(3,1))
+
+plot(hcd, main="Main")
+plot(cut(hcd, h=75)$upper, 
+     main="Upper tree of cut at h=75")
+plot(cut(hcd, h=75)$lower[[2]], 
+     main="Second branch of lower tree with cut at h=75")
