@@ -117,7 +117,8 @@ rm(tf, idf, tfidf)
 ##################################
 # Hierarchial Clustering
 ##################################
-d <- dist(dtm, method = "euclidean")
+dtm.matrix <- as.matrix(dtm)
+d <- dist(dtm.matrix, method = "euclidean")
 hc <- hclust(d, method = "complete")
 plot(hc, cex = 0.6, hang = -1)
 
