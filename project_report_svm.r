@@ -87,7 +87,7 @@ q <- quantile(m)
 cp <- c(round(q[1],2) - 0.01, q[2], q[3], q[4], round(q[5],2) + 0.01)
 discFeatures <- apply(m, 2, function(x) cut(x, breaks = cp))
 # chi-square test for independence between label and predictors
-# results: between lie label and predictors
+# results: between label and predictors
 testChiSq <- apply(discFeatures, 2, function(x) chisq.test(table(myLabels, x))$p.value)
 names(testChiSq) <- colnames(discFeatures)
 
@@ -181,11 +181,11 @@ for (i in 1:dim(myGrid)[1]) {
 # index for best paramaters
 i.best <- which.max(rowMeans(myGrid[, 3:7]))
 
-kable(myGrid, caption = "Fig.25 Tuning Grid (Lie)")
+kable(myGrid, caption = "Tuning Grid")
 
 
 
-# fit final svm lie classifier
+# fit final svm classifier
 fit.svm <- svm(x = datTrainSVM, y = labelTrain, 
                kernel = 'linear', cost = 10)
 
