@@ -27,7 +27,7 @@ library(Matrix)
 ######################################### 
 load('data/2transform.rda')
 # just keep the document term matrix
-rm(df, trans)
+rm(trans)
 
 ######################################### 
 # word cloud of dtm
@@ -114,12 +114,29 @@ mNorm <- tfidf
 rm(tf, idf, tfidf)
 
 
+
 ##################################
 # Hierarchial Clustering
 ##################################
-dtm.matrix <- as.matrix(dtm)
-d <- dist(dtm.matrix, method = "euclidean")
-hc <- hclust(d, method = "complete")
-plot(hc, cex = 0.6, hang = -1)
 
+# Due to the size of the data, limitations of memory, and limitations of the base R packages, a matrix of the DTM cannot have distances calculated on it, as it would require approximately 50 GB of memory and verctors that excede R's default sizes. Instead, k-means with a large number of centers is used to initially group the 
 
+# k <- kmeans(mNorm, centers = 160)
+# summary(k)
+# # Convert kmeans object to matrix using psych package
+# k.matrix <- psych::cluster2keys(k)
+# k.matrix.sampled <- sample(k.matrix, )
+# #k.matrix <- as.matrix(k)
+# d <- dist(k.matrix, method = "euclidean")
+# hc <- hclust(d, method = "complete")
+# plot(hc, cex = 0.6, hang = -1)
+dtm.pubs <- dtm
+dtm.pubs$dimnames$Docs <- df$publication
+dtm.matrix <- as.matrix(dtm.pubs)
+
+set.seed(12)
+sample.rate <- 0.1
+sampled.dtm.matrix <- dtm.matrix[sample(dtm.matrix, (nrow(dtm.matrix) * sample.rate), replace = FALSE), ]
+d <- dist(sampled.dtm.matrix, method = "euclidean")
+hc <- hclust(d, method = "ward.D")
+plot(hc)
