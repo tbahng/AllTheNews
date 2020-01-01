@@ -9,9 +9,9 @@ Term: Summer 2019
 
 Instructor: MA Gates amgates@syr.edu
 
-Data: https://www.kaggle.com/mit/pantheon-project
+Data: https://components.one/datasets/all-the-news-articles-dataset/
 
-Notebook Filename: Final_Project_Report.ipynb
+report: thomas_bahng_project_report.docx
 
 About the Data
 The All The News dataset was retrieved from the Components Publishing website components.one. The original dataset was made available on Kaggle, but the larger, updated dataset was published on Components’ website. The data was made available in a SQLite .db database file. This database contains the table ‘longform’ which was exported as a csv file. This csv was then read to support the analysis.
